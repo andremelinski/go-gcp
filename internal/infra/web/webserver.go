@@ -25,7 +25,6 @@ func NewWebServer(
 }
 
 // loop through the handlers and add them to the router
-// register middeleware logger
 // start the server
 func (s *WebServer) Start() {
 

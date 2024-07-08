@@ -21,7 +21,7 @@ func NewClimateUseCase(climateApi utils.IClimateInfoAPI)*ClimateUseCase{
 }
 
 func (l *ClimateUseCase)GetClimateUseCaseByName(name string) (*ClimateInfoDTO, error){
-	weatherInfo, err := l.WeatheInfo.GetClimateInfo(name)
+	weatherInfo, err := l.WeatheInfo.GetWeatherInfo(name)
 
 	if err != nil {
 		return nil, err

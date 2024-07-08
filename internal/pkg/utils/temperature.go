@@ -3,9 +3,8 @@ package utils
 import (
 	"context"
 	"encoding/json"
-	"io"
-	"net/http"
-	"time"
+	"errors"
+	"fmt"
 )
 
 type WeatherApiDTO struct {
@@ -66,41 +65,32 @@ type WeatherApiDTO struct {
 	} `json:"current"`
 }
 
-type ClimateInfo struct{}
-
-func NewClimateInfo() *ClimateInfo{
-	return &ClimateInfo{}
+type WeatherInfo struct{
+	apiKey string
 }
 
-func (c *ClimateInfo)GetClimateInfo(place string) (*WeatherApiDTO, error){
-	ctx := context.Background()
-	// TODO vai pra env
-	ctx, cancel := context.WithTimeout(ctx, 1000*time.Millisecond)
-	defer cancel()
-
-	req, err := http.NewRequestWithContext(ctx, "GET", "http://api.weatherapi.com/v1/current.json?key=dd26ddd8f88d474288821638240707&q=curitiba&aqi=yes", nil)
-	if err != nil {
-		return nil, err
+func NewWeatherInfo(apiKey string) *WeatherInfo{
+	return &WeatherInfo{
+		apiKey,
 	}
+}
 
-	defer req.Body.Close()
-	res, err := io.ReadAll(req.Body)
+func (c *WeatherInfo)GetWeatherInfo(place string) (*WeatherApiDTO, error){
+	ctx := context.Background()
+
+	url := fmt.Sprintf("http://api.weatherapi.com/v1/current.json?key=%s&q=curitiba&aqi=yes", c.apiKey)
+
+	bytes, err := CallExternalApi(ctx, 1000, "GET", url)
 	
 	if err != nil {
 		return nil, err
 	}
-	data := &WeatherApiDTO{}
-	err = json.Unmarshal(res, data)
-	if err != nil {
-		return nil, err
+
+	dto := &WeatherApiDTO{}
+	json.Unmarshal(bytes, dto)
+	if dto.Location.Name == "" {
+		return nil, errors.New("no matching location found")
 	}
 
-// {
-//     "error": {
-//         "code": 1006,
-//         "message": "No matching location found."
-//     }
-// }
-
-	return data, nil
+	return dto, nil
 }

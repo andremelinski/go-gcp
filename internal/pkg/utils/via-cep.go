@@ -4,9 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"io"
-	"net/http"
-	"time"
+	"fmt"
 )
 
 type ViaCepDTO struct {
@@ -32,29 +30,19 @@ func NewCepInfo() *CepInfo{
 
 func (c *CepInfo)GetCEPInfo(cep string) (*ViaCepDTO, error){
 	ctx := context.Background()
-	// TODO vai pra env
-	ctx, cancel := context.WithTimeout(ctx, 1000*time.Millisecond)
-	defer cancel()
 
-	req, err := http.NewRequestWithContext(ctx, "GET", "https://viacep.com.br/ws/"+cep+"/json/", nil)
+	url := fmt.Sprintf("https://viacep.com.br/ws/%s/json/", cep)
+
+	bytes, err := CallExternalApi(ctx, 3000, "GET", url)
 	if err != nil {
 		return nil, err
 	}
-
-	defer req.Body.Close()
-	res, err := io.ReadAll(req.Body)
 	
-	if err != nil {
-		return nil, err
-	}
 	data := &ViaCepDTO{}
-	err = json.Unmarshal(res, data)
-	if err != nil {
-		return nil, err
-	}
+	json.Unmarshal(bytes, data)
 
 	if data.Bairro == "" {
-		return nil, errors.New(string(res))
+		return nil, errors.New(string(bytes))
 	}
 
 	return data, nil

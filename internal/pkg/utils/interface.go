@@ -1,7 +1,7 @@
 package utils
 
 type IClimateInfoAPI interface{
-	GetClimateInfo(place string) (*WeatherApiDTO, error)
+	GetWeatherInfo(place string) (*WeatherApiDTO, error)
 }
 
 type ICepInfoAPI interface{
