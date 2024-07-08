@@ -66,7 +66,13 @@ type WeatherApiDTO struct {
 	} `json:"current"`
 }
 
-func (c *CepInfo)GetClimateInfo(city string) (*WeatherApiDTO, error){
+type ClimateInfo struct{}
+
+func NewClimateInfo() *ClimateInfo{
+	return &ClimateInfo{}
+}
+
+func (c *ClimateInfo)GetClimateInfo(place string) (*WeatherApiDTO, error){
 	ctx := context.Background()
 	// TODO vai pra env
 	ctx, cancel := context.WithTimeout(ctx, 1000*time.Millisecond)

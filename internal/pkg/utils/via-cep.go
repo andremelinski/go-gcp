@@ -23,10 +23,6 @@ type ViaCepDTO struct {
 	Siafi string `json:"siafi"`
 }
 
-type ICepInfoAPI interface{
-	GetCEPInfo(cep string) (*ViaCepDTO, error)
-}
-
 type CepInfo struct{}
 
 func NewCepInfo() *CepInfo{

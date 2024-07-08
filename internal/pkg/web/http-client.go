@@ -5,6 +5,11 @@ import (
 	"net/http"
 )
 
+type IWebResponseHandler interface{
+	Respond(w http.ResponseWriter, statusCode int, data any)
+	RespondWithError(w http.ResponseWriter, statusCode int, err error)
+}
+
 type WebResponseHandler struct{}
 
 func NewWebResponseHandler() *WebResponseHandler{
