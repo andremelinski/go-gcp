@@ -5,40 +5,33 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+
+	utils_dto "github.com/andremelinski/go-gcp/internal/pkg/utils/dto"
+	utils_interface "github.com/andremelinski/go-gcp/internal/pkg/utils/interface"
 )
 
-type ViaCepDTO struct {
-	Api string 
-	Cep string `json:"cep"` 
-	Logradouro string `json:"logradouro"`
-	Complemento string `json:"complemento"`
-	Bairro string `json:"bairro"`
-	Localidade string `json:"localidade"`
-	UF string `json:"uf"`
-	IBGE string `json:"ibge"`
-	Gia string `json:"gia"`
-	DDD string `json:"ddd"`
-	Siafi string `json:"siafi"`
+type CepInfo struct{
+	handlerExternalApi utils_interface.IHandlerExternalApi
 }
 
-type CepInfo struct{}
-
-func NewCepInfo() *CepInfo{
-	return &CepInfo{}
+func NewCepInfo(handlerExternalApi utils_interface.IHandlerExternalApi) *CepInfo{
+	return &CepInfo{
+		handlerExternalApi,
+	}
 }
 
 
-func (c *CepInfo)GetCEPInfo(cep string) (*ViaCepDTO, error){
+func (c *CepInfo)GetCEPInfo(cep string) (*utils_dto.ViaCepDTO, error){
 	ctx := context.Background()
 
 	url := fmt.Sprintf("https://viacep.com.br/ws/%s/json/", cep)
 
-	bytes, err := CallExternalApi(ctx, 3000, "GET", url)
+	bytes, err := c.handlerExternalApi.CallExternalApi(ctx, 3000, "GET", url)
 	if err != nil {
 		return nil, err
 	}
 	
-	data := &ViaCepDTO{}
+	data := &utils_dto.ViaCepDTO{}
 	json.Unmarshal(bytes, data)
 
 	if data.Bairro == "" {

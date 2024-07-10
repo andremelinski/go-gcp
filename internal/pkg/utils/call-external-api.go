@@ -7,8 +7,13 @@ import (
 	"time"
 )
 
+type HandlerExternalApi struct{}
 
-func CallExternalApi(ctx context.Context, timeoutMs int, method string, url string) ([]byte, error){
+func NewHandlerExternalApi() *HandlerExternalApi{
+	return &HandlerExternalApi{}
+}
+
+func (hea *HandlerExternalApi)CallExternalApi(ctx context.Context, timeoutMs int, method string, url string) ([]byte, error){
 	timeout := time.Duration(timeoutMs)*time.Millisecond
 
 	ctx, cancel := context.WithTimeout(ctx, timeout)

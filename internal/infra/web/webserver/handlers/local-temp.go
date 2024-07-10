@@ -10,21 +10,21 @@ import (
 	"github.com/andremelinski/go-gcp/internal/usecases"
 )
 
-type TemperatureLocationHandler struct{
+type LocalTemperatureHandler struct{
 	CepUseCase usecases.ILocationInfo
 	TempUseCase usecases.IWeatherInfo
 	HttpResponse web.IWebResponseHandler
 }
 
-func NewTemperatureLocationHandler (cepUseCase usecases.ILocationInfo,tempUseCase usecases.IWeatherInfo, httpResponse web.IWebResponseHandler) *TemperatureLocationHandler{
-	return &TemperatureLocationHandler{
+func NewLocalTemperatureHandler (cepUseCase usecases.ILocationInfo,tempUseCase usecases.IWeatherInfo, httpResponse web.IWebResponseHandler) *LocalTemperatureHandler{
+	return &LocalTemperatureHandler{
 		cepUseCase,
 		tempUseCase,
 		httpResponse,
 	}
 }
 
-func(lc *TemperatureLocationHandler) CityTemperature(w http.ResponseWriter, r *http.Request){
+func(lc *LocalTemperatureHandler) CityTemperature(w http.ResponseWriter, r *http.Request){
 	qs := r.URL.Query()
 	zipStr := qs.Get("zipcode")
 
@@ -40,7 +40,7 @@ func(lc *TemperatureLocationHandler) CityTemperature(w http.ResponseWriter, r *h
 		return 
 	}
 
-	climateInfo, err := lc.TempUseCase.GetClimateUseCaseByName(info.Localidade)
+	climateInfo, err := lc.TempUseCase.GetTempByPlaceName(info.Localidade)
 
 	if err != nil {
 		fmt.Println(err)

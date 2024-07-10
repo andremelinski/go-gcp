@@ -5,5 +5,5 @@ type ILocationInfo interface {
 }
 
 type IWeatherInfo interface{
-	GetClimateUseCaseByName(name string) (*ClimateInfoDTO, error)
+	GetTempByPlaceName(name string) (*TempDTO, error)
 }

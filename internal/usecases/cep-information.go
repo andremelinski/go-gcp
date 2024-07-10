@@ -1,12 +1,8 @@
 package usecases
 
 import (
-	"github.com/andremelinski/go-gcp/internal/pkg/utils"
+	utils_interface "github.com/andremelinski/go-gcp/internal/pkg/utils/interface"
 )
-
-type LocationInputDTO struct {
-	Cep    string  `json:"cep"`
-}
 
 type LocationOutputDTO struct{
 	Cep string `json:"cep"` 
@@ -19,10 +15,10 @@ type LocationOutputDTO struct{
 }
 
 type LocationUseCase struct {
-	cepInfo utils.ICepInfoAPI
+	cepInfo utils_interface.ICepInfoAPI
 }
 
-func NewLocationUseCase(cepInfo utils.ICepInfoAPI)*LocationUseCase{
+func NewLocationUseCase(cepInfo utils_interface.ICepInfoAPI)*LocationUseCase{
 	return &LocationUseCase{
 		cepInfo,
 	}
