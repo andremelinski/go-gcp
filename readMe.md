@@ -1,7 +1,75 @@
-Objetivo: Desenvolver um sistema em Go que receba um CEP, identifica a cidade e retorna o clima atual (temperatura em graus celsius, fahrenheit e kelvin). Esse sistema deverá ser publicado no Google Cloud Run.
+<!-- markdownlint-disable MD007 MD031 MD034 -->
 
-Requisitos:
+# Go Expert Labs - Cloud Run challenge
 
-O sistema deve receber um CEP válido de 8 digitos O sistema deve realizar a pesquisa do CEP e encontrar o nome da localização, a partir disso, deverá retornar as temperaturas e formata-lás em: Celsius, Fahrenheit, Kelvin. O sistema deve responder adequadamente nos seguintes cenários: Em caso de sucesso: Código HTTP: 200 Response Body: { "temp_C": 28.5, "temp_F": 28.5, "temp_K": 28.5 } Em caso de falha, caso o CEP não seja válido (com formato correto): Código HTTP: 422 Mensagem: invalid zipcode ​​​Em caso de falha, caso o CEP não seja encontrado: Código HTTP: 404 Mensagem: can not find zipcode Deverá ser realizado o deploy no Google Cloud Run. Dicas:
+Aplicação web em Go que receba um CEP, identifica a cidade e retorna o clima atual em Celsius, Fahrenheit e Kelvin.
 
-Utilize a API viaCEP (ou similar) para encontrar a localização que deseja consultar a temperatura: https://viacep.com.br/ Utilize a API WeatherAPI (ou similar) para consultar as temperaturas desejadas: https://www.weatherapi.com/ Para realizar a conversão de Celsius para Fahrenheit, utilize a seguinte fórmula: F = C \* 1,8 + 32 Para realizar a conversão de Celsius para Kelvin, utilize a seguinte fórmula: K = C + 273 Sendo F = Fahrenheit Sendo C = Celsius Sendo K = Kelvin
+## Executando em PROD (Cloud Run)
+
+A aplicação está disponível para acesso no serviço Google Cloud Run e pode ser acessado seguindo os seguintes parâmetros:
+
+-   **Endpoint:** https://cloudrun-goexpert-hkg7fv4fwa-rj.a.run.app/
+-   **Método:** GET
+-   **Query Params:**
+    -   **zipcode:** CEP a ser consultado
+
+Exemplo de requisição com `curl`:
+
+```bash
+curl -X GET https://cloudrun-goexpert-hkg7fv4fwa-rj.a.run.app//\?zipcode\=82540091
+```
+
+## Executando localmente (dev)
+
+### Requisitos
+
+1. Clone o repositório;
+2. Execute o comando `cp .env.example .env` para criar o arquivo de variáveis de ambiente;
+3. Edite o novo arquivo `.env` e insira sua chave de acesso à API do [WeatherAPI](https://www.weatherapi.com/) à variável `WEATHER_API_KEY`;
+
+### Via Docker
+
+1. Execute o comando `docker compose up` para realizar o build do container e iniciar a aplicação na porta declarada no arquivo `.env`;
+
+## Documentação do endpoint
+
+### Request
+
+| Endpoint | Descrição                                 | Método | Parâmetro |
+| -------- | ----------------------------------------- | ------ | --------- |
+| /        | Calcula a temperatura atual em uma cidade | GET    | zipcode   |
+
+### Response
+
+-   Sucesso:
+
+    -   **Código:** 200
+    -   **Body:**
+        ```json
+        {
+        	"temp_C": 14.2,
+        	"temp_F": 57.6,
+        	"temp_K": 287.2
+        }
+        ```
+
+-   CEP não encontrado:
+
+    -   Ex: 00000-000
+    -   **Código:** 404
+    -   **Body:**
+        ```json
+        {
+        	"message": "zipcode not found"
+        }
+        ```
+
+-   CEP inválido:
+    -   Ex: 00000-000a
+    -   **Código:** 422
+    -   **Body:**
+        ```json
+        {
+        	"message": "invalid zipcode"
+        }
+        ```
