@@ -29,10 +29,9 @@ func (hea *HandlerExternalApi)CallExternalApi(ctx context.Context, timeoutMs int
 	if err != nil {
 		return nil, err
 	}
-
 	defer res.Body.Close()
 	resp, err := io.ReadAll(res.Body)
-	
+
 	if err != nil {
 		return nil, err
 	}
