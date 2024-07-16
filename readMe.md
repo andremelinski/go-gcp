@@ -16,7 +16,13 @@ A aplicação está disponível para acesso no serviço Google Cloud Run e pode 
 Exemplo de requisição com `curl`:
 
 ```bash
-curl -X GET https://cloudrun-goexpert-hkg7fv4fwa-rj.a.run.app//\?zipcode\=82540091
+curl -X GET https://cloudrun-goexpert-hkg7fv4fwa-rj.a.run.app/?zipcode=01153000
+
+{
+    "temp_C": 15.3,
+    "temp_F": 59.5,
+    "temp_K": 288.3
+}
 ```
 
 ## Executando localmente (dev)
